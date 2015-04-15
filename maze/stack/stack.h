@@ -1,5 +1,20 @@
+#ifndef DUPLICATION_GUARD
+#define DUPLICATION_GUARD
 typedef enum{FALSE=0,TRUE=1} Boolean;
-typedef struct stack;
+typedef enum{E,S,W,N} DIRECTION;
+
+typedef struct {
+	int size;
+	int top;
+	int* stack;	
+}stack;
+
+typedef struct {
+    int row;
+    int columns;
+    DIRECTION dir;
+}move;
+#endif
 
 stack* createS(int size); 
 int stack_used(stack* s);

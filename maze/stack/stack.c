@@ -3,25 +3,23 @@
 
 typedef enum{FALSE=0,TRUE=1} Boolean;
 typedef enum{E,S,W,N} DIRECTION;
-
-typedef struct {
-	int size;
-	int top;
-	int* stack;	
-}stack;
-
 typedef struct {
     int row;
     int columns;
     DIRECTION dir;
 }move;
+typedef struct {
+	int size;
+	int top;
+	move* stack;	
+}stack;
 
 //Create a stack
 stack* createS(int size) {
 	stack* s = (stack*)malloc(sizeof(stack));
 	s->size = size;
 	s->top = -1;
-	s->stack = (int*)malloc(sizeof(int)*size);
+	s->stack = (move*)malloc(sizeof(move)*size);
 	return s;
 }
 
@@ -34,8 +32,8 @@ Boolean isEmpty(stack* s) {
 }
 
 
-int top(stack* s) {
-    return (s->top >= 0) ? s->stack[s->top] : -1;
+move* top(stack* s) {
+    return s->stack[s->top] ;
 }
 
 void push(stack* s, int e) {
