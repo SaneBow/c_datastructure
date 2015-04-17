@@ -2,16 +2,10 @@
 #include <stdlib.h>
 
 typedef enum{TRUE=1,FALSE=0} Boolean;
-typedef enum{E,S,W,N} DIRECTION;
-typedef struct {
-    int row;
-    int col;
-    DIRECTION dir;
-}Move;
 typedef struct {
 	int size;
 	int top;
-	Move* stack;	
+	int* stack;	
 }Stack;
 
 //Create a Stack
@@ -19,7 +13,7 @@ Stack* createS(int size) {
 	Stack* s = (Stack*)malloc(sizeof(Stack));
 	s->size = size;
 	s->top = -1;
-	s->stack = (Move*)malloc(sizeof(Move)*size);
+	s->stack = (int*)malloc(sizeof(int)*size);
 	return s;
 }
 
@@ -37,11 +31,11 @@ Boolean isEmpty(Stack* s) {
 }
 
 
-Move top(Stack* s) {
+int top(Stack* s) {
     return s->stack[s->top] ;
 }
 
-void push(Stack* s, Move e) {
+void push(Stack* s, int e) {
 	if (isFull(s)) {
 		fprintf(stderr,"[Push Err] Full\n");
 		return;
@@ -50,7 +44,7 @@ void push(Stack* s, Move e) {
 	s->stack[s->top] = e;
 }
 
-Move pop(Stack* s) {
+int pop(Stack* s) {
 	if (isEmpty(s)) {
 		fprintf(stderr,"[Pop Err] Empty\n");
         exit(1);
