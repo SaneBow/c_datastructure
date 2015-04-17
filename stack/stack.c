@@ -118,9 +118,15 @@ void printS(stack* s) {
 	free(tmp);
 }
 
+/* Free memories */
+void deleteS(stack* s) {
+    free(s->stack);
+    free(s);
+}
+
 
 /* Test function */
-void test() {
+void main() {
 	//Initiate a stack
 	stack* s = createS(5);
 	int e1[] = {0,1,2,3,4};
@@ -145,5 +151,5 @@ void test() {
 	stack* srr = createS(10);
 	pourS(sr,srr);
 	printS(srr);
-	free(s);free(ss);free(sr);free(srr);
+	deleteS(s);deleteS(ss);deleteS(sr);deleteS(srr);
 }

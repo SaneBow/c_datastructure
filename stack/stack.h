@@ -19,3 +19,4 @@ void loadS(stack* s, int* elements, int length);
 void pourS(stack* from,stack* to);
 stack* copyS(stack* s);
 void printS(stack* s);
+void deleteS(stack* s);
