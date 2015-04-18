@@ -6,40 +6,46 @@ typedef enum{FALSE=0,TRUE=1} Boolean;
 typedef struct {
 	int size;
 	int top;
-	int* stack;	
-}stack;
+	int* stack;
+}Stack;
 
 //Create a stack
-stack* createS(int size) {
-	stack* s = (stack*)malloc(sizeof(stack));
+Stack* createS(int size) {
+	Stack* s = (Stack*)malloc(sizeof(Stack));
 	s->size = size;
 	s->top = -1;
 	s->stack = (int*)malloc(sizeof(int)*size);
 	return s;
 }
 
-int stack_used(stack* s) {
+/* Free memories */
+void deleteS(Stack* s) {
+    free(s->stack);
+    free(s);
+}
+
+int stack_used(Stack* s) {
 	return s->top + 1;
 }
 
-int stack_unused(stack* s) {
+int stack_unused(Stack* s) {
 	return s->size - s->top -1;
 }
 
-Boolean isFull(stack* s) {
+Boolean isFull(Stack* s) {
 	return (s->top == s->size-1)? TRUE:FALSE;
 }
 
-Boolean isEmpty(stack* s) {
+Boolean isEmpty(Stack* s) {
 	return (s->top == -1)? TRUE:FALSE;
 }
 
 
-int top(stack* s) {
+int top(Stack* s) {
     return (s->top >= 0) ? s->stack[s->top] : -1;
 }
 
-void push(stack* s, int e) {
+void push(Stack* s, int e) {
 	if (isFull(s)) {
 		fprintf(stderr,"[Push Err] Full\n");
 		return;
@@ -48,7 +54,7 @@ void push(stack* s, int e) {
 	s->stack[s->top] = e;
 }
 
-int pop(stack* s) {
+int pop(Stack* s) {
 	if (isEmpty(s)) {
 		fprintf(stderr,"[Pop Err] Empty\n");
 		return -1;
@@ -56,19 +62,18 @@ int pop(stack* s) {
 	return s->stack[s->top--];
 }
 
-
 //Empty a stack
-void clearS(stack* s) {
+void clearS(Stack* s) {
 	while(!isEmpty(s)) {
 		pop(s);
 	}
 }
 
-//Load a int array into stack. 
-//The first elements of the array is at the bottom of the stack. 
-void loadS(stack* s, int* elements, int length) {
+//Load a int array into stack.
+//The first elements of the array is at the bottom of the stack.
+void loadS(Stack* s, int* elements, int length) {
 	clearS(s);
-	if (s->size < length) { 
+	if (s->size < length) {
 		fprintf(stderr,"[Load Err] Array larger than stack\n");
 	}
 	int i=0;
@@ -79,77 +84,44 @@ void loadS(stack* s, int* elements, int length) {
 }
 
 //Pour one stack into another
-void pourS(stack* from,stack* to) {
+void pourS(Stack* from,Stack* to) {
 	if (stack_unused(to) < stack_used(from)) {
 		fprintf(stderr,"[Pour Err] Space not enough");
 		return;
-	} 
+	}
 	while (!isEmpty(from)) {
 		push(to,pop(from));
 	}
 }
 
 //Return a copy of a stack
-stack* copyS(stack* s) {
-	stack* newstack = createS(s->size);
-	stack* tmpstack = createS(s->size);
+Stack* copyS(Stack* s) {
+	Stack* newstack = createS(s->size);
+	Stack* tmpstack = createS(s->size);
 	pourS(s, tmpstack);
 	while (!isEmpty(tmpstack)) {
 		int e = pop(tmpstack);
 		push(s,e);
-		push(newstack,e);	
+		push(newstack,e);
 	}
+    deleteS(tmpstack);
 	return newstack;
 }
 
 //Print out the graph representation of a stack
-void printS(stack* s) {
-	stack* tmp = copyS(s);
+void printS(Stack* s) {
+	Stack* tmp = copyS(s);
 	printf("    \n");
 	int i = 0;
 	while (i < stack_unused(tmp)) {
 		printf("|   |\n");
 		i++;
-	} 
+	}
 	while (!isEmpty(tmp)) {
 		printf("|%3d|\n",pop(tmp));
 	}
 	printf(" ---\n");
-	free(tmp);
-}
-
-/* Free memories */
-void deleteS(stack* s) {
-    free(s->stack);
-    free(s);
+	deleteS(tmp);
 }
 
 
-/* Test function */
-void main() {
-	//Initiate a stack
-	stack* s = createS(5);
-	int e1[] = {0,1,2,3,4};
-	loadS(s,e1,5);
-	pop(s);
-	pop(s);
-	printS(s);
-	//Initiate anoter stack
-	stack* ss = createS(5);
-	int e2[] = {100,99,98,97,96};
-	loadS(ss,e2,5);
-	printS(ss);
-	
-	//Merge two stack into a large one
-	stack* sr = createS(10);
-	while (!isEmpty(s) || !isEmpty(ss)) {
-		if (!isEmpty(s)) push(sr,pop(s));
-		if (!isEmpty(ss)) push(sr,pop(ss));
-	}
-	printS(sr);
-	//Pour merged stack into another
-	stack* srr = createS(10);
-	pourS(sr,srr);
-	printS(srr);
-	deleteS(s);deleteS(ss);deleteS(sr);deleteS(srr);
-}

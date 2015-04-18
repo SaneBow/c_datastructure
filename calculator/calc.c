@@ -7,7 +7,7 @@ char* expr;
 char infix[1000] = "1+2";
 char postfix[1000];
 
-precedence getToken(char*, int*); 
+precedence getToken(char*, int*);
 int eval(void);
 void toPostfix(void);
 void printToken(precedence);
@@ -16,7 +16,7 @@ int main() {
     int result;
 
     //Get user input, save into infix[]
-    
+
     //Convert infix expression to postfix
     expr = infix;
     toPostfix();
@@ -81,24 +81,9 @@ void toPostfix() {
     int n=0;
     Stack *s;
     s = createS(100);
+
     push(s,eos);
-    /*
     for (token = getToken(&symbol,&n); token!=eos; token = getToken(&symbol,&n)) {
-        if (token == operand) 
-            printf("%d",symbol-'0');
-        else if (token == rparen) {
-            while(top(s) != lparen) printToken(pop(s));
-            pop(s); //Discard left parenthesis
-        }
-        else {
-            push(s,token);
-            while(isp[top(s)]>=icp[token]) printToken(pop(s));
-        }
-    }
-    //while ((token=pop(s) != eos)) printToken(token);
-    */
-    token = getToken(&symbol,&n);
-    while (token != eos) {
         if (token == operand)
             printf("%d",symbol-'0');
         else if (token == rparen) {
@@ -106,11 +91,11 @@ void toPostfix() {
             pop(s); //Discard left parenthesis
         }
         else {
-            push(s,token);
             while(isp[top(s)]>=icp[token]) printToken(pop(s));
-        }   
-        token = getToken(&symbol,&n);
+            push(s,token);
+        }
     }
+    while ((token=pop(s)) != eos) printToken(token);
 }
 
 void printToken(precedence token) {

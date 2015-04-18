@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include "stack.h"
 
-void main() {
+int main(void) {
 	int e[] = {1,2,3,4};
 	int ee[] = {100,99,98,97,96,95};
-	stack* s = createS(10);
-	stack* ss = createS(10);
+	Stack* s = createS(10);
+	Stack* ss = createS(10);
 	loadS(ss,ee,6);
 	loadS(s,e,4);
 	printS(s);
@@ -15,5 +15,8 @@ void main() {
 	pop(ss);
 	pourS(ss,s);
 	printS(s);
+    deleteS(s);
+    deleteS(ss);
+    return 0;
 }
 
