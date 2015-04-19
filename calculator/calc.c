@@ -1,35 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "stack/stack.h"
 
 typedef enum {lparen,rparen,plus,minus,times,divide,eos,operand} precedence;
+int isp[] =  {0,     19,    12,  12,   13,   13,    0};
+int icp[] =  {20,    19,    12,  12,   13,   13,    0};
 char* expr;
-char infix[1000] = "1+2";
+char infix[1000];
 char postfix[1000];
 
 precedence getToken(char*, int*);
 int eval(void);
 void toPostfix(void);
-void printToken(precedence);
+void appendPostfix(precedence);
 
 int main() {
     int result;
 
-    //Get user input, save into infix[]
-
-    //Convert infix expression to postfix
-    expr = infix;
-    toPostfix();
-    //Eval postfix expression
-    expr = postfix;
-    result = eval();
-    printf("%s = %d\n",infix,result);
+    while (1) {
+        //Get user input, save into infix[]
+        printf("Calculator>> ");
+        gets(infix);
+        if (strcmp(infix,"exit")==0) exit(0);
+        //Convert infix expression to postfix
+        expr = infix;
+        toPostfix();
+        //Eval postfix expression
+        expr = postfix;
+        result = eval();
+        printf("%s = %d\n",infix,result);
+    }
 
     return 0;
 }
 
 precedence getToken(char *symbol, int *n) {
-    printf("getToken\n");
     *symbol = expr[(*n)++];
     switch (*symbol) {
         case '+': return plus;
@@ -44,7 +50,6 @@ precedence getToken(char *symbol, int *n) {
 }
 
 int eval(void) {
-    printf("eval\n");
     precedence token;
     char symbol;
     Stack *s;
@@ -73,10 +78,8 @@ int eval(void) {
 }
 
 void toPostfix() {
-    printf("toPost\n");
-    int isp[] = {0,19,12,12,13,13,13,0};
-    int icp[] = {20,19,12,12,13,13,13,0};
     char symbol;
+    char tmpstr[2] = {'X','\0'};
     precedence token;
     int n=0;
     Stack *s;
@@ -84,25 +87,27 @@ void toPostfix() {
 
     push(s,eos);
     for (token = getToken(&symbol,&n); token!=eos; token = getToken(&symbol,&n)) {
-        if (token == operand)
-            printf("%d",symbol-'0');
+        if (token == operand) {
+            tmpstr[0] = symbol;
+            strcat(postfix,tmpstr);
+        }
         else if (token == rparen) {
-            while(top(s) != lparen) printToken(pop(s));
+            while(top(s) != lparen) appendPostfix(pop(s));
             pop(s); //Discard left parenthesis
         }
         else {
-            while(isp[top(s)]>=icp[token]) printToken(pop(s));
+            while(isp[top(s)]>=icp[token]) appendPostfix(pop(s));
             push(s,token);
         }
     }
-    while ((token=pop(s)) != eos) printToken(token);
+    while ((token=pop(s)) != eos) appendPostfix(token);
 }
 
-void printToken(precedence token) {
+void appendPostfix(precedence token) {
     switch (token) {
-        case plus: printf("+"); break;
-        case minus: printf("-"); break;
-        case times: printf("*"); break;
-        case divide: printf("/"); break;
+        case plus: strcat(postfix,"+"); break;
+        case minus: strcat(postfix,"-"); break;
+        case times: strcat(postfix,"*"); break;
+        case divide: strcat(postfix,"/"); break;
     }
 }

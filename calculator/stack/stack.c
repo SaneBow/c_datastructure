@@ -57,7 +57,7 @@ void push(Stack* s, int e) {
 int pop(Stack* s) {
 	if (isEmpty(s)) {
 		fprintf(stderr,"[Pop Err] Empty\n");
-		return -1;
+        exit(1);
 	}
 	return s->stack[s->top--];
 }
